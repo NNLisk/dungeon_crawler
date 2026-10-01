@@ -4,6 +4,7 @@ pub struct Player {
     name: String,
     hp: i64,
     max_hp: i64,
+    damage: i64,
     speed: i64,
     luck: i64,
     range: i64,
@@ -13,16 +14,16 @@ pub struct Player {
     xp: i64,
     killcount: i64,
     boss_killcount: i64,
-    dungeon_floor: i8,
 } 
 
 impl Player {
 
     pub fn new(name: String, max_hp: i64) -> Self {
-        Player { 
+        Player {
             name: name, 
             hp: max_hp, 
             max_hp: max_hp, 
+            damage: 0,
             speed: 0, 
             luck: 0, 
             range: 0, 
@@ -32,7 +33,6 @@ impl Player {
             xp: 0, 
             killcount: 0, 
             boss_killcount: 0, 
-            dungeon_floor: 0
         }
 
     }
@@ -60,13 +60,43 @@ impl Player {
         };
     }
 
+    pub fn change_hp(&mut self, change: i64, max: bool) {
+        match max {
+            true => self.max_hp += change,
+            false => self.hp += change,
+        };
+    }
+
+    pub fn get_dmg(&self) -> i64 {
+        self.damage
+    }
+
+    pub fn change_dmg(&mut self, change: i64) {
+        self.damage += change;
+    }
+
 
     pub fn get_level(&self) -> i64 {
         self.level
     }
 
+    pub fn get_next_required_xp(&self) -> i128 {
+        // next required xp i used geometric sequence
+        let base: f64 = 500.0;
+        let increase_fact: f64 = 1.05;
+
+        let n = (self.level + 1) as i32;
+
+        // sum of xp until players level
+        (base * (increase_fact.powi(n) - 1.0) / (increase_fact - 1.0)) as i128
+    }
+
     pub fn get_xp(&self) -> i64 {
         self.xp
+    }
+
+    pub fn change_xp(&mut self, change: i64) {
+        self.xp += change;
     }
 
     pub fn get_killcount(&self, boss: bool) {
@@ -76,24 +106,45 @@ impl Player {
         };
     }
 
-    pub fn get_current_floor(&self) -> i8 {
-        self.dungeon_floor
+    pub fn up_killcount(&mut self, boss: bool) {
+        match boss {
+            true => {
+                self.boss_killcount += 1;
+                self.killcount += 1;
+            },
+            false => self.killcount += 1,
+        }
     }
 
     pub fn get_luck(&self) -> i64 {
         self.luck
     }
 
+    pub fn change_luck(&mut self, change: i64) {
+        self.luck += change;
+    }
+
     pub fn get_range(&self) -> i64 {
         self.range
+    }
+    pub fn change_range(&mut self, change: i64) {
+        self.range += change;
     }
 
     pub fn get_item_capacity(&self) -> i64 {
         self.item_capacity
     }
 
+    pub fn change_item_cap(&mut self, change: i64) {
+        self.item_capacity += change;
+    }
+
     pub fn get_speed(&self) -> i64 {
         self.speed
+    }
+
+    pub fn change_speed(&mut self, change: i64) {
+        self.speed += change;
     }
 
 }
