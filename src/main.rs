@@ -53,6 +53,12 @@ fn start_menu() -> Player {
             },
             _ => continue
         };
+
+        player.change_hp(1000, true);
+        player.change_hp(1000, false);
+
+        player.change_luck(1);
+        player.change_item_cap(3);
     }
 
 
