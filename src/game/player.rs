@@ -1,3 +1,5 @@
+use std::fmt;
+
 use super::item::Item;
 
 pub struct Player {
@@ -18,23 +20,22 @@ pub struct Player {
 
 impl Player {
 
-    pub fn new(name: String, max_hp: i64) -> Self {
+    pub fn new(name: String, hp: i64, range: i64, speed: i64, damage: i64, luck: i64, item_capacity: i64) -> Self {
         Player {
-            name: name, 
-            hp: max_hp, 
-            max_hp: max_hp, 
-            damage: 0,
-            speed: 0, 
-            luck: 0, 
-            range: 0, 
-            item_capacity: 0, 
+            name,
+            hp, 
+            max_hp: hp,
+            damage,
+            speed, 
+            luck, 
+            range, 
+            item_capacity, 
             items: vec![], 
             level: 0, 
             xp: 0, 
             killcount: 0, 
             boss_killcount: 0, 
         }
-
     }
 
     pub fn print_items(&self) {
@@ -80,7 +81,7 @@ impl Player {
         self.level
     }
 
-    pub fn get_next_required_xp(&self) -> i128 {
+    pub fn get_next_required_xp(&self) -> i64 {
         // next required xp i used geometric sequence
         let base: f64 = 500.0;
         let increase_fact: f64 = 1.05;
@@ -88,7 +89,7 @@ impl Player {
         let n = (self.level + 1) as i32;
 
         // sum of xp until players level
-        (base * (increase_fact.powi(n) - 1.0) / (increase_fact - 1.0)) as i128
+        (base * (increase_fact.powi(n) - 1.0) / (increase_fact - 1.0)) as i64
     }
 
     pub fn get_xp(&self) -> i64 {
