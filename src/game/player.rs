@@ -1,6 +1,7 @@
 use std::fmt;
 
 use super::item::Item;
+use super::enemy::Enemy;
 
 pub struct Player {
     name: String,
@@ -44,10 +45,14 @@ impl Player {
         }
     }
 
+    pub fn fight_enemy(&mut self, enemy: &mut Enemy) {
+
+    }
+
     // GETTERS AND SETTERS
 
-    pub fn get_name(&self) -> String {
-        self.name.clone()
+    pub fn get_name(&self) -> &str {
+        self.name.trim()
     }
 
     pub fn set_name(&mut self, name: String) {
@@ -148,4 +153,19 @@ impl Player {
         self.speed += change;
     }
 
+}
+
+
+// dont know if some sources are needed but this from here
+// https://doc.rust-lang.org/rust-by-example/hello/print/print_display.html
+impl fmt::Display for Player {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let r = write!(f, 
+            "[{}],\nHP: {}/{}\nDMG {}, RNG {}, SPD {}\nXP: {}, Until next level: {}", 
+            self.get_name(),
+            self.hp, self.max_hp,
+            self.get_dmg(), self.get_range(), self.get_speed(),
+            self.get_xp(), self.get_next_required_xp() - self.get_xp());
+        r
+    }
 }
