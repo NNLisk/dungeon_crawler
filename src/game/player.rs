@@ -7,6 +7,7 @@ pub struct Player {
     name: String,
     hp: i64,
     max_hp: i64,
+    stamina: i64,
     damage: i64,
     speed: i64,
     luck: i64,
@@ -24,8 +25,9 @@ impl Player {
     pub fn new(name: String, hp: i64, range: i64, speed: i64, damage: i64, luck: i64, item_capacity: i64) -> Self {
         Player {
             name,
-            hp, 
+            hp,
             max_hp: hp,
+            stamina: 100,
             damage,
             speed, 
             luck, 
@@ -47,6 +49,24 @@ impl Player {
 
     pub fn fight_enemy(&mut self, enemy: &mut Enemy) {
 
+    }
+
+    pub fn attack(&self, enemy: &mut Enemy) {
+        let base = 0.85;
+        // Advantage if player speed > enemy speed
+        let speed_factor = (self.speed - enemy.get_speed()) as f64 * 0.005;
+        // Player luck improves player's own accuracy
+        let luck_factor = self.luck as f64 * 0.02;
+
+        let final_hit_chance = (base + speed_factor + luck_factor).clamp(0.50, 0.98);
+        let roll: f64 = rand::random();
+
+        if roll < final_hit_chance {
+            println!("[{}] strikes [{}] for {} DMG!", self.name, enemy.get_name(), self.damage);
+            enemy.change_hp(self.damage);
+        } else {
+            println!("[{}] swung at [{}] but missed!", self.name, enemy.get_name());
+        }
     }
 
     // GETTERS AND SETTERS

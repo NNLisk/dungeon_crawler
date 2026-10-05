@@ -2,6 +2,9 @@ use super::player::Player;
 
 use rand::Rng;
 
+pub enum PlayerError {
+    Dead,
+}
 pub struct Enemy {
     name: String,
     hp: i64,
@@ -38,6 +41,26 @@ impl Enemy {
     pub fn get_name(&self) -> String {
         self.name.clone()
     }
+
+    pub fn get_hp(&self) -> i64 {
+        self.hp
+    }
+    
+    pub fn change_hp(&mut self, change: i64) -> Result<(), PlayerError> {
+        self.hp += change;
+
+        if self.hp <= 0 {
+            self.hp = 0;
+            Err(PlayerError::Dead)
+        } else {
+            Ok(())
+        }
+    }
+
+    pub fn get_speed(&self) -> i64 {
+        self.speed
+    }
+
 }
 
 pub fn initiate_enemy_types() -> Vec<Enemy> {

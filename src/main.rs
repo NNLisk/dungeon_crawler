@@ -1,4 +1,5 @@
 mod game;
+mod logger;
 
 use std::{io};
 
@@ -7,11 +8,13 @@ use game::{
     game_instance::Game,
     enemy::{Enemy, initiate_enemy_types}
 };
-
-
-
+use logger::logger::{Logger, LogLevel};
 
 fn main() {
+
+    let log = Logger::new(LogLevel::Debug, "MAIN");
+
+    log.debug("Game initiated");
 
     let player = start_menu();
     let enemies = initiate_enemy_types();
@@ -79,12 +82,8 @@ fn start_menu() -> Player {
     print!("=====================\n");
     print!("Pleasure to meet you {}!\nI am Ahrnam, the shopkeeper and a fellow crawler, like you\nYes, I see a hunter's glint in your eyes. It's no easy thing finding one's way in the dark.\nI'm rambling... If we meet down there, I might have some things to trade you. Toodle-oo!\n\n", player.get_name());
 
-    print!("=====================\n{}\n=====================", player);
+    print!("=====================\n{}\n=====================\n", player);
     player
 }
 
 
-pub fn fight_enemy(g: &mut Game) {
-
-    
-}
