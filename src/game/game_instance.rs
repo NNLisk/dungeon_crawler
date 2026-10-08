@@ -1,10 +1,10 @@
-use rand::seq::IndexedRandom;
+use rand::seq::{IndexedRandom};
 use std::time::Duration;
-use std::{io, thread};
+use std::{io, result, thread};
 use std::sync::{mpsc};
 
 use crate::game::{player::Player};
-use crate::game::enemy::{self, Enemy, initiate_enemy_types};
+use crate::game::enemy::{Enemy, initiate_enemy_types};
 use crate::logger::logger::{Logger, LogLevel};
 
 enum Events {
@@ -12,6 +12,10 @@ enum Events {
     PlayerHit,
     PlayerHeal,
     PlayerShield,
+}
+
+pub enum PlayerError {
+    Dead,
 }
 pub struct Game {
     player: Player,
@@ -37,15 +41,20 @@ impl Game {
         &mut self.player
     }
 
-    pub fn get_enemy(&self) -> &Enemy {
+    pub fn get_enemy(&self) -> Enemy {
         let mut rng = rand::rng();
-        &self.enemies.choose(&mut rng).expect("ChooseFail")
+        let mut enemy = self.enemies.choose(&mut rng).expect("ChooseError").clone();
+
+
+        enemy.adjust_to_player_level(self.floor, self.room);
+
+        enemy
+
     }
 
-    pub fn fight(&self) {
+    pub fn fight(&mut self) -> Result<(), PlayerError> {
 
-        let enemy = self.get_enemy().clone();
-        let p = self.get_player_ref();
+        let mut enemy = self.get_enemy();
         let mut input = String::new();
 
         let (tx, rx) = mpsc::channel();
@@ -68,6 +77,10 @@ impl Game {
             
             input.clear();
 
+            io::stdin()
+                .read_line(&mut input)
+                .expect("InputError");
+
             if let Ok(i) = input.trim().parse::<i64>() {
                 match i {
                     1 => {
@@ -76,12 +89,12 @@ impl Game {
                         }
                     }, 
                     2 => {
-                        if tx_player.send(Events::PlayerHit).is_err() {
+                        if tx_player.send(Events::PlayerHeal).is_err() {
                             break;
                         }
                     },
                     3 => {
-                        if tx_player.send(Events::PlayerHit).is_err() {
+                        if tx_player.send(Events::PlayerShield).is_err() {
                             break;
                         }
                     }
@@ -93,9 +106,19 @@ impl Game {
         loop {
             if let Ok(msg) = rx.recv() {
                 match msg {
-                    Events::EnemyHit => enemy.attack(p),
-                    Events::PlayerHit => p.attack(enemy),
-                    Events::PlayerHeal => p.heal(),
+                    Events::EnemyHit => {
+                        if enemy.attack(&mut self.player, shield).is_err() {
+                            self.log.info("Player died");
+                            return Err(PlayerError::Dead);
+                        }
+                    },
+                    Events::PlayerHit => {
+                        if self.player.attack(&mut enemy).is_err() {
+                            self.log.info("Enemy has died");
+                            return Ok(());
+                        }
+                    },
+                    Events::PlayerHeal => self.player.heal(),
                     Events::PlayerShield => shield = true,
                 };
             }

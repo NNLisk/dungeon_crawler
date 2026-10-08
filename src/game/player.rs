@@ -1,5 +1,8 @@
 use std::fmt;
 
+use crate::game::game_instance::PlayerError;
+use crate::logger::logger::{LogLevel, Logger};
+
 use super::item::Item;
 use super::enemy::Enemy;
 
@@ -16,8 +19,8 @@ pub struct Player {
     items: Vec<Item>,
     level: i64,
     xp: i64,
-    killcount: i64,
-    boss_killcount: i64,
+    
+    log: Logger,
 } 
 
 impl Player {
@@ -35,9 +38,9 @@ impl Player {
             item_capacity, 
             items: vec![], 
             level: 0, 
-            xp: 0, 
-            killcount: 0, 
-            boss_killcount: 0, 
+            xp: 0,
+
+            log: Logger::new(LogLevel::Info, "Player"),
         }
     }
 
@@ -47,25 +50,29 @@ impl Player {
         }
     }
 
-    pub fn fight_enemy(&mut self, enemy: &mut Enemy) {
 
+    pub fn heal(&mut self) {
+        
     }
 
-    pub fn attack(&self, enemy: &mut Enemy) {
+    pub fn attack(&self, enemy: &mut Enemy) -> Result<(), PlayerError> {
+
+        // same as enemy, luck and speed change attack, and cahnce to miss
         let base = 0.85;
-        // Advantage if player speed > enemy speed
         let speed_factor = (self.speed - enemy.get_speed()) as f64 * 0.005;
-        // Player luck improves player's own accuracy
         let luck_factor = self.luck as f64 * 0.02;
 
         let final_hit_chance = (base + speed_factor + luck_factor).clamp(0.50, 0.98);
         let roll: f64 = rand::random();
 
         if roll < final_hit_chance {
-            println!("[{}] strikes [{}] for {} DMG!", self.name, enemy.get_name(), self.damage);
-            enemy.change_hp(self.damage);
+
+            self.log.info(format!("Enemy hit for {}", self.damage));
+            self.log.debug(enemy.get_hp());
+            return enemy.change_hp(self.damage*-1);
         } else {
-            println!("[{}] swung at [{}] but missed!", self.name, enemy.get_name());
+            self.log.info("Miss!");
+            Ok(())
         }
     }
 
@@ -86,12 +93,20 @@ impl Player {
         };
     }
 
-    pub fn change_hp(&mut self, change: i64, max: bool) {
+    pub fn change_hp(&mut self, change: i64, max: bool) -> Result<(), PlayerError> {
         match max {
             true => self.max_hp += change,
             false => self.hp += change,
         };
+
+        if self.hp <= 0 {
+            self.hp = 0;
+            Err(PlayerError::Dead)
+        } else {
+            Ok(())
+        }
     }
+
 
     pub fn get_dmg(&self) -> i64 {
         self.damage
@@ -125,22 +140,6 @@ impl Player {
         self.xp += change;
     }
 
-    pub fn get_killcount(&self, boss: bool) {
-        match boss {
-            true => self.boss_killcount,
-            false => self.killcount,
-        };
-    }
-
-    pub fn up_killcount(&mut self, boss: bool) {
-        match boss {
-            true => {
-                self.boss_killcount += 1;
-                self.killcount += 1;
-            },
-            false => self.killcount += 1,
-        }
-    }
 
     pub fn get_luck(&self) -> i64 {
         self.luck

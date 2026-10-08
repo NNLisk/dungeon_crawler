@@ -10,6 +10,7 @@ pub enum LogLevel {
     Fatal,
 }
 
+#[derive(Clone, Debug)]
 pub struct Logger {
     min_level: LogLevel,
     tag: String,
@@ -41,14 +42,14 @@ impl Logger {
             return;
         }
 
-        let now = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap_or_default()
-            .as_secs();
+        // let now = SystemTime::now()
+        //     .duration_since(SystemTime::UNIX_EPOCH)
+        //     .unwrap_or_default()
+        //     .as_secs();
 
         let line = format!(
-            "[{}] [{}{}\x1b[0m] {}\n",
-            now, color_code, self.tag, msg
+            "[{}{}\x1b[0m] {}\n",
+            color_code, self.tag, msg
         );
 
         print!("{}", line);

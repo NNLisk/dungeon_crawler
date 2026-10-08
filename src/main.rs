@@ -6,20 +6,34 @@ use std::{io};
 use game::{
     player::Player, 
     game_instance::Game,
-    enemy::{Enemy, initiate_enemy_types}
+    game_instance::PlayerError,
 };
 use logger::logger::{Logger, LogLevel};
+
 
 fn main() {
 
     let log = Logger::new(LogLevel::Debug, "MAIN");
 
-    log.debug("Game initiated");
+    log.debug("Program start");
 
     let player = start_menu();
-    let enemies = initiate_enemy_types();
-    
+    log.debug("player created");
+
     let mut game = Game::new(player);
+
+    log.debug("game created");
+
+
+    match game.fight() {
+        Ok(()) => {
+            log.info("PLAYER WON");
+        },
+        Err(PlayerError::Dead) => {
+            log.info("Player has died");
+        }
+        
+    }
 
 }
 
@@ -85,5 +99,3 @@ fn start_menu() -> Player {
     print!("=====================\n{}\n=====================\n", player);
     player
 }
-
-
