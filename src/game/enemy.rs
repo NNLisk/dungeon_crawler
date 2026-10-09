@@ -4,7 +4,6 @@ use crate::{game::game_instance::PlayerError, logger::logger::{LogLevel, Logger}
 
 use super::player::Player;
 
-use rand::Rng;
 
 
 #[derive(Clone, Debug)]
@@ -44,7 +43,7 @@ impl Enemy {
         };
 
         if roll >= final_hit_chance {
-            println!("[{}] hits you with for {} DMG", self.name, self.damage);
+            println!("[{}] hits you with for {} DMG", self.name, damage);
             return p.change_hp(damage, false);
         }
 

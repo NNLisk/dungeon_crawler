@@ -81,25 +81,24 @@ impl Game {
                 .read_line(&mut input)
                 .expect("InputError");
 
-            if let Ok(i) = input.trim().parse::<i64>() {
-                match i {
-                    1 => {
-                        if tx_player.send(Events::PlayerHit).is_err() {
-                            break;
-                        }
-                    }, 
-                    2 => {
-                        if tx_player.send(Events::PlayerHeal).is_err() {
-                            break;
-                        }
-                    },
-                    3 => {
-                        if tx_player.send(Events::PlayerShield).is_err() {
-                            break;
-                        }
+            match input.as_str().trim() {
+                "SLAM" => {
+                    if tx_player.send(Events::PlayerHit).is_err() {
+                        break;
                     }
-                    _ => continue,
+                }, 
+                "HEAL" => {
+                    if tx_player.send(Events::PlayerHeal).is_err() {
+                        break;
+                    }
+                },
+                "SHIELD" => {
+                    if tx_player.send(Events::PlayerShield).is_err() {
+                        break;
+                    }
                 }
+                _ => continue,
+                
             }
         });
 
