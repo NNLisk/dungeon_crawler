@@ -64,7 +64,7 @@ impl Game {
         let mut shield = false;
 
         println!("======== Your turn ========");
-        println!("1) Attack | 2) Heal | 3) shield ");
+        println!("(slam) Attack | (heal) Heal | (shield) shield ");
 
         thread::spawn(move || loop {
             thread::sleep(Duration::from_secs(3));
@@ -82,17 +82,17 @@ impl Game {
                 .expect("InputError");
 
             match input.as_str().trim() {
-                "SLAM" => {
+                "slam" => {
                     if tx_player.send(Events::PlayerHit).is_err() {
                         break;
                     }
                 }, 
-                "HEAL" => {
+                "heal" => {
                     if tx_player.send(Events::PlayerHeal).is_err() {
                         break;
                     }
                 },
-                "SHIELD" => {
+                "shield" => {
                     if tx_player.send(Events::PlayerShield).is_err() {
                         break;
                     }
