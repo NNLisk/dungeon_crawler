@@ -25,18 +25,57 @@ fn main() {
     log.debug("game created");
 
 
-    match game.fight() {
-        Ok(()) => {
-            log.info("PLAYER WON");
-        },
-        Err(PlayerError::Dead) => {
-            log.info("Player has died");
+    // FULL LOOP
+    loop {
+
+
+        loop {
+
+            match game.fight() {
+                Ok(()) => {
+                    log.info("Player Won!");
+                    game.set_room(game.get_room() + 1);
+                },
+                Err(PlayerError::Dead) => {
+                    log.info("Player has died");
+                    game.get_player_ref().set_alive(false);
+                    break;
+                }
+            }
+
+
+            // FLOOR ENDING
+            if game.get_room() == 0 {
+                break;
+            }
+        }
+
+        if !game.get_player_ref().get_alive() {
+            player_lost_menu(&mut game);
+            break;
         }
         
+        game.set_floor(game.get_floor() + 1);
+        game.set_room(1);
+
+        if game.get_floor() == 0 {
+            player_won_menu(&mut game);
+            break;
+        }
     }
+
 
 }
 
+fn player_won_menu(g: &mut Game) {
+    println!("Oh wow, you have won, congrats, game is over");
+}
+
+fn player_lost_menu(g: &mut Game) {
+
+    println!("HAH, You have lost and the game is over now");
+
+}
 
 fn start_menu() -> Player {
 

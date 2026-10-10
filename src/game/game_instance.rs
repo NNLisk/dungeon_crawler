@@ -1,6 +1,6 @@
 use rand::seq::{IndexedRandom};
 use std::time::Duration;
-use std::{io, result, thread};
+use std::{io, thread, unreachable};
 use std::sync::{mpsc};
 
 use crate::game::{player::Player};
@@ -64,7 +64,7 @@ impl Game {
         let mut shield = false;
 
         println!("======== Your turn ========");
-        println!("1) Attack (27) | 2) Heal | 3) shield (10)");
+        println!("1) Attack | 2) Heal | 3) shield ");
 
         thread::spawn(move || loop {
             thread::sleep(Duration::from_secs(3));
@@ -122,6 +122,43 @@ impl Game {
                 };
             }
         }
+
         
     }
+
+    pub fn set_floor(&mut self, f: i8) {
+
+        match f {
+            0..=2 => {
+                self.floor = f;
+                self.log.info(format!("Floor set to {f}"));
+            },
+            3.. => self.floor = 0,
+            _ => unreachable!()
+        }
+
+
+    }
+
+    pub fn get_floor(&self) -> i8 {
+        self.floor
+    }
+
+    pub fn set_room(&mut self, r: i8) {
+        
+        match r {
+            0..=2 => {
+                self.room = r;
+                self.log.info(format!("Room set to {r}"));
+            },
+            3.. => self.room = 0,
+            _ => unreachable!()
+        }
+    }
+
+    pub fn get_room(&self) -> i8 {
+        self.room
+    }
+
+
 }

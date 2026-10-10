@@ -19,6 +19,7 @@ pub struct Player {
     items: Vec<Item>,
     level: i64,
     xp: i64,
+    alive: bool,
     
     log: Logger,
 } 
@@ -39,6 +40,7 @@ impl Player {
             items: vec![], 
             level: 0, 
             xp: 0,
+            alive: true,
 
             log: Logger::new(LogLevel::Info, "Player"),
         }
@@ -170,6 +172,14 @@ impl Player {
 
     pub fn change_speed(&mut self, change: i64) {
         self.speed += change;
+    }
+
+    pub fn set_alive(&mut self, b: bool) {
+        self.alive = false;
+    }
+
+    pub fn get_alive(&mut self) -> bool {
+        self.alive
     }
 
 }
