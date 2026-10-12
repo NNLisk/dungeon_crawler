@@ -24,10 +24,10 @@ fn main() {
 
     log.debug("game created");
 
+    prepare_player();
 
     // FULL LOOP
     loop {
-
 
         loop {
 
@@ -65,6 +65,10 @@ fn main() {
     }
 
 
+}
+
+fn prepare_player() {
+    
 }
 
 fn player_won_menu(g: &mut Game) {
