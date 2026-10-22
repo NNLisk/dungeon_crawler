@@ -3,6 +3,7 @@ use std::time::Duration;
 use std::{io, thread, unreachable};
 use std::sync::{mpsc};
 
+use crate::game::item::{Potion, initiate_potion_options};
 use crate::game::{player::Player};
 use crate::game::enemy::{Enemy, initiate_enemy_types};
 use crate::logger::logger::{Logger, LogLevel};
@@ -22,6 +23,7 @@ pub struct Game {
     floor: i8,
     room: i8,
     enemies: Vec<Enemy>,
+    shop_items: Vec<Potion>,
     log: Logger,
 }
 
@@ -33,6 +35,7 @@ impl Game {
             floor: 1,
             room: 1,
             enemies: initiate_enemy_types(),
+            shop_items: initiate_potion_options(),
             log: Logger::new(LogLevel::Debug, "Game"),
         }
     }
@@ -122,8 +125,13 @@ impl Game {
                 };
             }
         }
-
         
+    }
+
+    pub fn shop(&mut self) {
+
+        println!("")
+
     }
 
     pub fn set_floor(&mut self, f: i8) {

@@ -3,7 +3,7 @@ use std::fmt;
 use crate::game::game_instance::PlayerError;
 use crate::logger::logger::{LogLevel, Logger};
 
-use super::item::Item;
+use super::item::Potion;
 use super::enemy::Enemy;
 
 pub struct Player {
@@ -16,7 +16,7 @@ pub struct Player {
     luck: i64,
     range: i64,
     item_capacity: i64,
-    items: Vec<Item>,
+    items: Vec<Potion>,
     level: i64,
     xp: i64,
     alive: bool,

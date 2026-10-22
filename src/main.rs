@@ -31,6 +31,10 @@ fn main() {
 
         loop {
 
+            if game.get_room() == 3 {
+
+            }
+
             match game.fight() {
                 Ok(()) => {
                     log.info("Player Won!");
