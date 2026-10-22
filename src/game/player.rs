@@ -10,12 +10,11 @@ pub struct Player {
     name: String,
     hp: i64,
     max_hp: i64,
-    stamina: i64,
     damage: i64,
     speed: i64,
     luck: i64,
     range: i64,
-    item_capacity: i64,
+    item_capacity: usize,
     items: Vec<Potion>,
     level: i64,
     xp: i64,
@@ -26,12 +25,11 @@ pub struct Player {
 
 impl Player {
 
-    pub fn new(name: String, hp: i64, range: i64, speed: i64, damage: i64, luck: i64, item_capacity: i64) -> Self {
+    pub fn new(name: String, hp: i64, range: i64, speed: i64, damage: i64, luck: i64, item_capacity: usize) -> Self {
         Player {
             name,
             hp,
             max_hp: hp,
-            stamina: 100,
             damage,
             speed, 
             luck, 
@@ -53,8 +51,15 @@ impl Player {
     }
 
 
-    pub fn heal(&mut self) {
-        
+    pub fn heal(&mut self, potions: i64) {
+
+        if potions > 0 {
+            _ = self.change_hp(200, false);
+            return;
+        }
+
+        self.log.info("No Potions Left!");
+
     }
 
     pub fn attack(&self, enemy: &mut Enemy) -> Result<(), PlayerError> {
@@ -76,6 +81,15 @@ impl Player {
             self.log.info("Miss!");
             Ok(())
         }
+    }
+
+    pub fn add_potion(&mut self, p: Potion) {
+        if self.items.len() < self.item_capacity {
+            self.items.push(p);
+            return;
+        }
+
+        println!("Items are full!");
     }
 
     // GETTERS AND SETTERS
@@ -158,12 +172,8 @@ impl Player {
         self.range += change;
     }
 
-    pub fn get_item_capacity(&self) -> i64 {
+    pub fn get_item_capacity(&self) -> usize {
         self.item_capacity
-    }
-
-    pub fn change_item_cap(&mut self, change: i64) {
-        self.item_capacity += change;
     }
 
     pub fn get_speed(&self) -> i64 {

@@ -65,6 +65,7 @@ impl Game {
         let tx_player = tx.clone();
 
         let mut shield = false;
+        let mut player_potions = 3;
 
         println!("======== Your turn ========");
         println!("(slam) Attack | (heal) Heal | (shield) shield ");
@@ -120,7 +121,10 @@ impl Game {
                             return Ok(());
                         }
                     },
-                    Events::PlayerHeal => self.player.heal(),
+                    Events::PlayerHeal => {
+                        self.player.heal(player_potions);
+                        player_potions -= 1;
+                    },
                     Events::PlayerShield => shield = true,
                 };
             }
@@ -130,7 +134,29 @@ impl Game {
 
     pub fn shop(&mut self) {
 
-        println!("")
+        let mut input = String::new();
+
+        println!("Hello there! Remember me? Arnham, the crawler! I have some items, i can give you one if you'd like?");
+
+        for item in &self.shop_items {
+            println!("{} \n || {}", item.get_name(), item.get_desc());
+        }
+
+        println!("Which one would you like?");
+
+        io::stdin()
+            .read_line(&mut input)
+            .expect("InputError");
+
+        let choice = input.trim().parse().expect("ParsingError");
+
+        match choice {
+            1..4 => {
+                self.player.add_potion(self.shop_items[choice-1].clone());
+                return;
+            },
+            _ => println!("Bad choice"),
+        }
 
     }
 

@@ -32,7 +32,7 @@ fn main() {
         loop {
 
             if game.get_room() == 3 {
-
+                game.shop();
             }
 
             match game.fight() {
