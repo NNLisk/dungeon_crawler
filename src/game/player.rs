@@ -12,7 +12,7 @@ pub struct Player {
     max_hp: i64,
     damage: i64,
     speed: i64,
-    luck: i64,
+    luck: f64,
     range: i64,
     item_capacity: usize,
     items: Vec<Potion>,
@@ -25,7 +25,7 @@ pub struct Player {
 
 impl Player {
 
-    pub fn new(name: String, hp: i64, range: i64, speed: i64, damage: i64, luck: i64, item_capacity: usize) -> Self {
+    pub fn new(name: String, hp: i64, range: i64, speed: i64, damage: i64, luck: f64, item_capacity: usize) -> Self {
         Player {
             name,
             hp,
@@ -123,6 +123,29 @@ impl Player {
         }
     }
 
+    pub fn use_potion(&mut self, choice: usize) {
+        let potion = self.items.remove(choice-1);
+
+        if potion.get_max_hp() > 0 {
+            self.log.info("Max health increased!");
+        }
+        if potion.get_damage() > 0 {
+            self.log.info("Damage increased!");
+        }
+        if potion.get_luck() > 0.0 {
+            self.log.info("Luck increased!");
+        }
+        if potion.get_speed() > 0 {
+            self.log.info("Speed increased!");
+        }
+        
+
+        self.max_hp += potion.get_max_hp();
+        self.speed += potion.get_speed();
+        self.damage += potion.get_damage();
+        self.luck += potion.get_luck();
+    }
+
 
     pub fn get_dmg(&self) -> i64 {
         self.damage
@@ -157,11 +180,11 @@ impl Player {
     }
 
 
-    pub fn get_luck(&self) -> i64 {
+    pub fn get_luck(&self) -> f64 {
         self.luck
     }
 
-    pub fn change_luck(&mut self, change: i64) {
+    pub fn change_luck(&mut self, change: f64) {
         self.luck += change;
     }
 
@@ -175,6 +198,11 @@ impl Player {
     pub fn get_item_capacity(&self) -> usize {
         self.item_capacity
     }
+
+    pub fn get_item_count(&mut self) -> usize {
+        self.items.len()
+    }
+
 
     pub fn get_speed(&self) -> i64 {
         self.speed

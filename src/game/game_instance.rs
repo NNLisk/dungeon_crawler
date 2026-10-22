@@ -52,7 +52,15 @@ impl Game {
         enemy.adjust_to_player_level(self.floor, self.room);
 
         enemy
+    }
 
+    pub fn get_starting_potions(&mut self) {
+        let mut rng = rand::rng();
+        
+        for _ in 0..self.player.get_item_capacity() - 2 {
+            let potion = self.shop_items.choose(&mut rng).expect("ChooseError").clone();
+            let _ = &mut self.player.add_potion(potion);
+        };
     }
 
     pub fn fight(&mut self) -> Result<(), PlayerError> {
@@ -67,8 +75,11 @@ impl Game {
         let mut shield = false;
         let mut player_potions = 3;
 
+        
+        
+
         println!("======== Your turn ========");
-        println!("(slam) Attack | (heal) Heal | (shield) shield ");
+        println!("(hit) Attack | (heal) Heal | (shield) shield ");
 
         thread::spawn(move || loop {
             thread::sleep(Duration::from_secs(3));
@@ -132,11 +143,12 @@ impl Game {
         
     }
 
+
     pub fn shop(&mut self) {
 
         let mut input = String::new();
 
-        println!("Hello there! Remember me? Arnham, the crawler! I have some items, i can give you one if you'd like?");
+        println!("Hello there! Remember me? Arnham, the crawler! I have some items, I can give you one if you'd like?");
 
         for item in &self.shop_items {
             println!("{} \n || {}", item.get_name(), item.get_desc());
@@ -160,14 +172,16 @@ impl Game {
 
     }
 
+
+    // 3 floors of 4 rooms!
     pub fn set_floor(&mut self, f: i8) {
 
         match f {
-            0..=2 => {
+            0..=3 => {
                 self.floor = f;
                 self.log.info(format!("Floor set to {f}"));
             },
-            3.. => self.floor = 0,
+            4.. => self.floor = 0,
             _ => unreachable!()
         }
 
@@ -181,11 +195,11 @@ impl Game {
     pub fn set_room(&mut self, r: i8) {
         
         match r {
-            0..=2 => {
+            0..=4 => {
                 self.room = r;
                 self.log.info(format!("Room set to {r}"));
             },
-            3.. => self.room = 0,
+            5.. => self.room = 0,
             _ => unreachable!()
         }
     }
@@ -195,4 +209,27 @@ impl Game {
     }
 
 
+}
+
+
+pub fn potion_fight_menu(g: &mut Game) {
+
+    let mut input = String::new();
+    let player_item_count = g.get_player_ref().get_item_count();
+
+
+    println!("======== Potions ========");
+    g.player.print_items();
+
+    println!("You may use one potion before the fight, which one?");
+
+    io::stdin()
+        .read_line(&mut input)
+        .expect("InputError");
+
+    let choice: usize = input.trim().parse().expect("ParsingError");
+
+    if choice > 0 && choice < player_item_count {
+        g.player.use_potion(choice)
+    }
 }

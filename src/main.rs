@@ -24,14 +24,14 @@ fn main() {
 
     log.debug("game created");
 
-    prepare_player();
+    prepare_player(&mut game);
 
     // FULL LOOP
     loop {
 
         loop {
 
-            if game.get_room() == 3 {
+            if game.get_room() % 2 == 0 {
                 game.shop();
             }
 
@@ -71,8 +71,8 @@ fn main() {
 
 }
 
-fn prepare_player() {
-    
+fn prepare_player(g: &mut Game) {
+    g.get_starting_potions();
 }
 
 fn player_won_menu(g: &mut Game) {
@@ -91,8 +91,8 @@ fn start_menu() -> Player {
     let speed: i64;
     let damage: i64;
     let hp = 1000;
-    let luck = 1;
-    let item_cap = 3;
+    let luck = 1.0;
+    let item_cap = 5;
     print!("=====================\n");
 
     println!("|| Welcome to dungeon crawler!\n|| Pick your starting weapon!\n|| (R)ange, (S)peed, (D)amage\n||");
@@ -103,6 +103,7 @@ fn start_menu() -> Player {
     let mut name = String::new();
 
     loop {
+        weapon.clear();
 
         io::stdin()
         .read_line(&mut weapon)

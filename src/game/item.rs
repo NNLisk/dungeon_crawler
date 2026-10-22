@@ -39,6 +39,22 @@ impl Potion {
     pub fn get_desc(&self) -> String {
         self.desc.clone()
     }
+
+    pub fn get_max_hp(&self) -> i64 {
+        self.max_health
+    }
+
+    pub fn get_speed(&self) -> i64 {
+        self.speed
+    }
+
+    pub fn get_damage(&self) -> i64 {
+        self.damage
+    }
+
+    pub fn get_luck(&self) -> f64 {
+        self.luck
+    }
 }
 
 pub fn initiate_potion_options() -> Vec<Potion> {
