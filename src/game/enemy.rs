@@ -89,6 +89,15 @@ impl Enemy {
         self
     }
 
+    pub fn print_enemy(&self) {
+        println!("{}\nHP: {}\nDamage: {}\nSpeed: {}",
+                self.name.clone(),
+                self.hp,
+                self.damage,
+                self.speed,
+            )
+    }
+
 }
 
 pub fn initiate_boss_types() -> Vec<Enemy> {

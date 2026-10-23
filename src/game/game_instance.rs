@@ -57,7 +57,7 @@ impl Game {
             shop_items: initiate_potion_options(),
             tx,
             rx,
-            log: Logger::new(LogLevel::Debug, "Game"),
+            log: Logger::new(LogLevel::Info, "Game"),
         }
     }
 
@@ -86,13 +86,13 @@ impl Game {
                 self.enemies.choose(&mut rng).expect("ChooseError").clone()
             }
         };
+        enemy.adjust_to_player_level(self.floor, self.room);
         
         println!("#############################################################");
         self.log.info(format!("You walk into a room and find a {}", enemy.get_name()));
+        enemy.print_enemy();
+        println!("\n{}", self.player);
         println!("#############################################################");
-
-
-        enemy.adjust_to_player_level(self.floor, self.room);
 
         enemy
     }
@@ -123,7 +123,7 @@ impl Game {
         println!("(hit) Attack | (heal) Heal | (shield) shield ");
         
 
-        let (stop_tx, stop_rx) = mpsc::channel::<()>();
+        let (_, stop_rx) = mpsc::channel::<()>();
         let tx_enemy = self.tx.clone();
 
         thread::spawn(move || loop {
@@ -169,7 +169,7 @@ impl Game {
     pub fn shop(&mut self) {
 
         let mut index = 1;
-
+        println!("#############################################################");
         println!("Hello there! Remember me? Arnham, the crawler! I have some items, I can give you one if you'd like?");
 
         for item in &self.shop_items {
@@ -197,6 +197,8 @@ impl Game {
             _ => println!("Bad choice"),
         }
     }
+
+
 
 
     // 3 floors of 4 rooms!
@@ -250,9 +252,16 @@ pub fn potion_fight_menu(g: &mut Game) {
 
     let input = g.read_input();
 
-    let choice: usize = input.trim().parse().expect("ParsingError");
-
-    if choice > 0 && choice < player_item_count {
-        g.player.use_potion(choice)
-    }
+    match input.trim().parse::<usize>() {
+        Ok(0) => return,
+        Ok(choice) => {
+            if choice < player_item_count {
+                g.player.use_potion(choice);
+            } else {
+                println!("Bad choice!");
+                return;
+            }
+        },
+        Err(_) => return,
+    };
 }
