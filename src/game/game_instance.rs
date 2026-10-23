@@ -123,7 +123,7 @@ impl Game {
         println!("(hit) Attack | (heal) Heal | (shield) shield ");
         
 
-        let (_, stop_rx) = mpsc::channel::<()>();
+        let (stop_tx, stop_rx) = mpsc::channel::<()>();
         let tx_enemy = self.tx.clone();
 
         thread::spawn(move || loop {
