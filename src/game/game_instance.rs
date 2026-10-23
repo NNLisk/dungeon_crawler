@@ -5,7 +5,7 @@ use std::sync::{mpsc};
 
 use crate::game::item::{Potion, initiate_potion_options};
 use crate::game::{player::Player};
-use crate::game::enemy::{Enemy, initiate_enemy_types};
+use crate::game::enemy::{Enemy, initiate_boss_types, initiate_enemy_types};
 use crate::logger::logger::{Logger, LogLevel};
 
 enum Events {
@@ -23,6 +23,7 @@ pub struct Game {
     floor: i8,
     room: i8,
     enemies: Vec<Enemy>,
+    bosses: Vec<Enemy>,
     shop_items: Vec<Potion>,
     log: Logger,
 }
@@ -35,6 +36,7 @@ impl Game {
             floor: 1,
             room: 1,
             enemies: initiate_enemy_types(),
+            bosses: initiate_boss_types(),
             shop_items: initiate_potion_options(),
             log: Logger::new(LogLevel::Debug, "Game"),
         }
@@ -44,10 +46,20 @@ impl Game {
         &mut self.player
     }
 
-    pub fn get_enemy(&self) -> Enemy {
+    pub fn get_enemy(&self, boss: bool) -> Enemy {
         let mut rng = rand::rng();
-        let mut enemy = self.enemies.choose(&mut rng).expect("ChooseError").clone();
 
+        let mut enemy = match boss {
+            true => {
+                self.bosses.choose(&mut rng).expect("ChooseError").clone()
+
+            },
+            false => {
+                self.enemies.choose(&mut rng).expect("ChooseError").clone()
+            }
+        };
+        
+        self.log.info(format!("You walk into a room and find a {}", enemy.get_name()));
 
         enemy.adjust_to_player_level(self.floor, self.room);
 
@@ -63,9 +75,9 @@ impl Game {
         };
     }
 
-    pub fn fight(&mut self) -> Result<(), PlayerError> {
+    pub fn fight(&mut self, boss: bool) -> Result<(), PlayerError> {
 
-        let mut enemy = self.get_enemy();
+        let mut enemy = self.get_enemy(boss);
         let mut input = String::new();
 
         let (tx, rx) = mpsc::channel();
@@ -75,8 +87,9 @@ impl Game {
         let mut shield = false;
         let mut player_potions = 3;
 
-        
-        
+        self.player.restore_hp();      
+
+        potion_fight_menu(self);  
 
         println!("======== Your turn ========");
         println!("(hit) Attack | (heal) Heal | (shield) shield ");
@@ -129,6 +142,7 @@ impl Game {
                     Events::PlayerHit => {
                         if self.player.attack(&mut enemy).is_err() {
                             self.log.info("Enemy has died");
+                            self.player.add_xp(enemy.get_xp_drop());
                             return Ok(());
                         }
                     },
@@ -219,9 +233,9 @@ pub fn potion_fight_menu(g: &mut Game) {
 
 
     println!("======== Potions ========");
+    println!("You may use a potion before the fight (0 to skip)");
     g.player.print_items();
 
-    println!("You may use one potion before the fight, which one?");
 
     io::stdin()
         .read_line(&mut input)

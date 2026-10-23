@@ -1,3 +1,5 @@
+use core::prelude::rust_2015;
+
 use crate::{game::game_instance::PlayerError, logger::logger::{LogLevel, Logger}};
 
 use super::player::Player;
@@ -68,6 +70,10 @@ impl Enemy {
         }
     }
 
+    pub fn get_xp_drop(&self) -> i64 {
+        self.xp_drop
+    }
+
     pub fn get_speed(&self) -> i64 {
         self.speed
     }
@@ -85,16 +91,83 @@ impl Enemy {
 
 }
 
-pub fn initiate_enemy_types() -> Vec<Enemy> {
+pub fn initiate_boss_types() -> Vec<Enemy> {
 
     let balrog = Enemy::new(
         String::from("Balrog"),
-        2500,
-        320,
+        4500,
+        500,
         250,
         100,
-        450
+        500
     );
 
-    vec![balrog]
+    let witch_king_angmar = Enemy::new(
+        String::from("Witch King of Angmar"),
+        1800,
+        400,
+        400,
+        250,
+        600,
+    );
+
+    let uruk_hai = Enemy::new(
+        String::from("Uruk-Hai"),
+        5000,
+        350,
+        100,
+        40,
+        750,
+    );
+
+    vec![balrog, uruk_hai, witch_king_angmar]
+}
+
+pub fn initiate_enemy_types() -> Vec<Enemy> {
+    let goblin = Enemy::new(
+        String::from("Goblin"),
+        400,
+        90,
+        150,
+        180,
+        80,
+    );
+
+    let orc = Enemy::new(
+        String::from("Orc"),
+        700,
+        150,
+        200,
+        110,
+        150,
+    );
+
+    let uruk = Enemy::new(
+        String::from("Uruk"),
+        500,
+        120,
+        100,
+        220,
+        110,
+    );
+
+    let spider = Enemy::new(
+        String::from("Spider"),
+        300,
+        70,
+        80,
+        300,
+        60,
+    );
+
+    let fell_beast = Enemy::new(
+        String::from("Fell Beast"),
+        900,
+        180,
+        50,
+        60,
+        170,
+    );
+
+    vec![goblin, orc, uruk, spider, fell_beast]
 }

@@ -1,7 +1,7 @@
 mod game;
 mod logger;
 
-use std::{io};
+use std::{io, process::exit};
 
 use game::{
     player::Player, 
@@ -14,6 +14,7 @@ use logger::logger::{Logger, LogLevel};
 fn main() {
 
     let log = Logger::new(LogLevel::Debug, "MAIN");
+    let mut boss = false;
 
     log.debug("Program start");
 
@@ -31,11 +32,15 @@ fn main() {
 
         loop {
 
+            if game.get_room() == 4 {
+                boss = true;
+            }
+
             if game.get_room() % 2 == 0 {
                 game.shop();
             }
 
-            match game.fight() {
+            match game.fight(boss) {
                 Ok(()) => {
                     log.info("Player Won!");
                     game.set_room(game.get_room() + 1);
@@ -47,6 +52,7 @@ fn main() {
                 }
             }
 
+            boss = false;
 
             // FLOOR ENDING
             if game.get_room() == 0 {
@@ -73,6 +79,24 @@ fn main() {
 
 fn prepare_player(g: &mut Game) {
     g.get_starting_potions();
+
+    let mut input = String::new();
+
+    println!("Game is dungeon crawler based on real time fighting, during the fight, you have to write \"hit\", to attack, \"heal\" to heal and \"shield\" to shield up\n the enemy will attack periodically if you're lucky they might miss");
+    
+    loop {
+
+        println!("Start game? (y/n)");
+        io::stdin()
+        .read_line(&mut input)
+        .expect("InputError");
+        
+        match input.as_str().trim() {
+            "y" => return,
+            "n" => exit(0),
+            _ => continue,
+        }
+    }
 }
 
 fn player_won_menu(g: &mut Game) {

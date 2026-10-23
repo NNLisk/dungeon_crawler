@@ -123,6 +123,10 @@ impl Player {
         }
     }
 
+    pub fn restore_hp(&mut self) {
+        self.hp = self.max_hp;
+    }
+
     pub fn use_potion(&mut self, choice: usize) {
         let potion = self.items.remove(choice-1);
 
@@ -175,10 +179,6 @@ impl Player {
         self.xp
     }
 
-    pub fn change_xp(&mut self, change: i64) {
-        self.xp += change;
-    }
-
 
     pub fn get_luck(&self) -> f64 {
         self.luck
@@ -203,6 +203,25 @@ impl Player {
         self.items.len()
     }
 
+    pub fn add_xp(&mut self, xp: i64) {
+        let required_xp = self.get_next_required_xp();
+        self.xp += xp;
+
+        if self.xp > required_xp {
+            self.level_up();
+        }
+    }
+
+    pub fn level_up(&mut self) {
+        self.level += 1;
+        self.max_hp = (self.max_hp as f64 * 1.02) as i64;
+        self.damage = (self.damage as f64 * 1.02) as i64;
+        self.range = (self.range as f64 * 1.02) as i64;
+        self.speed = (self.speed as f64 * 1.02) as i64;
+
+        self.log.info(format!("Level Up! Reached level {}", self.level));
+    }
+
 
     pub fn get_speed(&self) -> i64 {
         self.speed
@@ -213,7 +232,7 @@ impl Player {
     }
 
     pub fn set_alive(&mut self, b: bool) {
-        self.alive = false;
+        self.alive = b;
     }
 
     pub fn get_alive(&mut self) -> bool {
