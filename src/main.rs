@@ -38,6 +38,7 @@ fn main() {
 
             if game.get_room() % 2 == 0 {
                 game.shop();
+                log.debug("Shop complete");
             }
 
             match game.fight(boss) {
@@ -79,18 +80,14 @@ fn main() {
 
 fn prepare_player(g: &mut Game) {
     g.get_starting_potions();
-
-    let mut input = String::new();
-
-    println!("Game is dungeon crawler based on real time fighting, during the fight, you have to write \"hit\", to attack, \"heal\" to heal and \"shield\" to shield up\n the enemy will attack periodically if you're lucky they might miss");
+    
+    println!("=====================\nGame is dungeon crawler based on real time fighting, during the fight, you have to write \"hit\", to attack, \"heal\" to heal and \"shield\" to shield up\n the enemy will attack periodically if you're lucky they might miss\n=====================");
     
     loop {
 
         println!("Start game? (y/n)");
-        io::stdin()
-        .read_line(&mut input)
-        .expect("InputError");
-        
+        let input = g.read_input();
+
         match input.as_str().trim() {
             "y" => return,
             "n" => exit(0),
@@ -166,7 +163,7 @@ fn start_menu() -> Player {
 
     let player = Player::new(name, hp, range, speed, damage, luck, item_cap);
     print!("=====================\n");
-    print!("Pleasure to meet you {}!\nI am Ahrnam, the shopkeeper and a fellow crawler, like you\nYes, I see a hunter's glint in your eyes. It's no easy thing finding one's way in the dark.\nI'm rambling... If we meet down there, I might have some things to trade you. Toodle-oo!\n\n", player.get_name());
+    print!("Pleasure to meet you {}!\nI am Ahrnam, crawler and a fellow crawler, like you\nYes, I see a hunter's glint in your eyes. It's no easy thing finding one's way in the dark.\nI'm rambling... If we meet down there, I might have some things to trade you. Toodle-oo!\n\n", player.get_name());
 
     print!("=====================\n{}\n=====================\n", player);
     player

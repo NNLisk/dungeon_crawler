@@ -61,9 +61,9 @@ pub fn initiate_potion_options() -> Vec<Potion> {
 
     vec![
         Potion::new(PotionTypes::MaxHP, String::from("Maximum health"), String::from("Increases max health"), 300, 0.0, 0, 0),
-        Potion::new(PotionTypes::Speed, String::from("Maximum health"), String::from("Increases speed"), 0, 0.0, 25, 0),
-        Potion::new(PotionTypes::Luck, String::from("Maximum health"), String::from("Increases luck"), 300, 0.25, 0, 0),
-        Potion::new(PotionTypes::Damage, String::from("Maximum health"), String::from("Increases damage"), 300, 0.25, 0, 200),
+        Potion::new(PotionTypes::Speed, String::from("Suspicious lotion"), String::from("Rubbing in your feet makes you faster"), 0, 0.0, 25, 0),
+        Potion::new(PotionTypes::Luck, String::from("Lucky Charm"), String::from("Makes you feel luckier"), 300, 0.25, 0, 0),
+        Potion::new(PotionTypes::Damage, String::from("Whetstone"), String::from("Sharpens the weapons"), 300, 0.25, 0, 200),
 
     ]
 }
