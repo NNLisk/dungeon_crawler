@@ -45,8 +45,12 @@ impl Player {
     }
 
     pub fn print_items(&self) {
+
+        let mut index = 1;
+
         for item in &self.items {
-            println!("Name: {}, Description: {}", item.get_name(), item.get_desc());
+            println!("{}) {} || Description: {}", index, item.get_name(), item.get_desc());
+            index += 1;
         }
     }
 

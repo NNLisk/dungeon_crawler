@@ -255,7 +255,7 @@ pub fn potion_fight_menu(g: &mut Game) {
     match input.trim().parse::<usize>() {
         Ok(0) => return,
         Ok(choice) => {
-            if choice < player_item_count {
+            if choice <= player_item_count {
                 g.player.use_potion(choice);
             } else {
                 println!("Bad choice!");
