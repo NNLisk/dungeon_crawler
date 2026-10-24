@@ -7,9 +7,10 @@ pub enum PotionTypes {
 }
 #[derive(Clone)]
 pub struct Potion {
-    t: PotionTypes,
+    _t: PotionTypes,
     name: String,
     desc: String,
+    cost: i64,
 
     max_health: i64,
     luck: f64,
@@ -19,16 +20,17 @@ pub struct Potion {
 
 impl Potion {
 
-    pub fn new(t: PotionTypes, name: String, desc: String, max_health: i64, luck: f64, speed: i64, damage: i64) -> Self {
+    pub fn new(_t: PotionTypes, name: String, desc: String, cost: i64, max_health: i64, luck: f64, speed: i64, damage: i64) -> Self {
         
         Potion {
-            t: t,
-            name: name,
-            desc: desc,
-            max_health: max_health,
-            luck: luck,
-            speed: speed,
-            damage: damage,
+            _t,
+            name,
+            desc,
+            cost,
+            max_health,
+            luck,
+            speed,
+            damage,
         }
     }
 
@@ -38,6 +40,10 @@ impl Potion {
 
     pub fn get_desc(&self) -> String {
         self.desc.clone()
+    }
+
+    pub fn get_cost(&self) -> i64 {
+        self.cost
     }
 
     pub fn get_max_hp(&self) -> i64 {
@@ -60,10 +66,10 @@ impl Potion {
 pub fn initiate_potion_options() -> Vec<Potion> {
 
     vec![
-        Potion::new(PotionTypes::MaxHP, String::from("Maximum health"), String::from("Increases max health"), 300, 0.0, 0, 0),
-        Potion::new(PotionTypes::Speed, String::from("Suspicious lotion"), String::from("Rubbing in your feet makes you faster"), 0, 0.0, 25, 0),
-        Potion::new(PotionTypes::Luck, String::from("Lucky Charm"), String::from("Makes you feel luckier"), 300, 0.25, 0, 0),
-        Potion::new(PotionTypes::Damage, String::from("Whetstone"), String::from("Sharpens the weapons"), 300, 0.25, 0, 200),
+        Potion::new(PotionTypes::MaxHP, String::from("Maximum health"), String::from("Increases max health"), 4, 300, 0.0, 0, 0),
+        Potion::new(PotionTypes::Speed, String::from("Suspicious lotion"), String::from("Rubbing in your feet makes you faster"), 2, 0, 0.0, 25, 0),
+        Potion::new(PotionTypes::Luck, String::from("Lucky Charm"), String::from("Makes you feel luckier"), 300, 2, 0.25, 0, 0),
+        Potion::new(PotionTypes::Damage, String::from("Whetstone"), String::from("Sharpens the weapons"), 300, 3, 0.25, 0, 200),
 
     ]
 }

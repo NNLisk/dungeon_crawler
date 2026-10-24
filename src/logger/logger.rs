@@ -1,4 +1,4 @@
-use std::{fmt::Display, time::SystemTime};
+use std::{fmt::Display};
 
 // this makes logging a bit easier, separating log messages
 // and you can limit which you see when running
@@ -7,7 +7,7 @@ use std::{fmt::Display, time::SystemTime};
 pub enum LogLevel {
     Debug,
     Info,
-    Fatal,
+    _Fatal,
 }
 
 #[derive(Clone, Debug)]
@@ -31,8 +31,8 @@ impl Logger {
 
     }
 
-    pub fn fatal<T: Display>(&self, msg: T) {
-        self.log(LogLevel::Fatal, "\x1b[32m", msg);
+    pub fn _fatal<T: Display>(&self, msg: T) {
+        self.log(LogLevel::_Fatal, "\x1b[32m", msg);
         std::process::exit(0)
     }
 

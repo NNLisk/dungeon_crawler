@@ -17,6 +17,7 @@ pub struct Player {
     item_capacity: usize,
     items: Vec<Potion>,
     level: i64,
+    money: i64,
     xp: i64,
     alive: bool,
     
@@ -37,6 +38,7 @@ impl Player {
             item_capacity, 
             items: vec![], 
             level: 0, 
+            money: 0,
             xp: 0,
             alive: true,
 
@@ -102,11 +104,11 @@ impl Player {
         self.name.trim()
     }
 
-    pub fn set_name(&mut self, name: String) {
+    pub fn _set_name(&mut self, name: String) {
         self.name = name;
     }
 
-    pub fn get_hp(&self, max: bool) {
+    pub fn _get_hp(&self, max: bool) {
         match max {
             true => self.max_hp,
             false => self.hp,
@@ -159,12 +161,12 @@ impl Player {
         self.damage
     }
 
-    pub fn change_dmg(&mut self, change: i64) {
+    pub fn _change_dmg(&mut self, change: i64) {
         self.damage += change;
     }
 
 
-    pub fn get_level(&self) -> i64 {
+    pub fn _get_level(&self) -> i64 {
         self.level
     }
 
@@ -188,14 +190,14 @@ impl Player {
         self.luck
     }
 
-    pub fn change_luck(&mut self, change: f64) {
+    pub fn _change_luck(&mut self, change: f64) {
         self.luck += change;
     }
 
     pub fn get_range(&self) -> i64 {
         self.range
     }
-    pub fn change_range(&mut self, change: i64) {
+    pub fn _change_range(&mut self, change: i64) {
         self.range += change;
     }
 
@@ -216,6 +218,18 @@ impl Player {
         }
     }
 
+    pub fn add_money(&mut self, money: i64) {
+        self.money += money;
+    }
+
+    pub fn get_money(&self) -> i64 {
+        self.money
+    }
+
+    pub fn spend_money(&mut self, m: i64) {
+        self.money -= m;
+    }
+
     pub fn level_up(&mut self) {
         self.level += 1;
         self.max_hp = (self.max_hp as f64 * 1.02) as i64;
@@ -231,7 +245,7 @@ impl Player {
         self.speed
     }
 
-    pub fn change_speed(&mut self, change: i64) {
+    pub fn _change_speed(&mut self, change: i64) {
         self.speed += change;
     }
 

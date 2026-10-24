@@ -1,7 +1,6 @@
 use rand::seq::{IndexedRandom};
-use std::io::Write;
 use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender};
-use std::time::{Duration, Instant};
+use std::time::{Duration};
 use std::{io, thread, unreachable};
 use std::sync::{mpsc};
 
@@ -123,7 +122,7 @@ impl Game {
         println!("(hit) Attack | (heal) Heal | (shield) shield ");
         
 
-        let (stop_tx, stop_rx) = mpsc::channel::<()>();
+        let (_stop_tx, stop_rx) = mpsc::channel::<()>();
         let tx_enemy = self.tx.clone();
 
         thread::spawn(move || loop {
@@ -150,6 +149,9 @@ impl Game {
                         if self.player.attack(&mut enemy).is_err() {
                             self.log.info("Enemy has died");
                             self.player.add_xp(enemy.get_xp_drop());
+                            self.player.add_money(enemy.get_money_drop());
+
+                            self.log.info(format!("Player got {} coin(s) and {} xp.", enemy.get_money_drop(), enemy.get_xp_drop()));
                             return Ok(());
                         }
                     }
@@ -170,17 +172,15 @@ impl Game {
 
         let mut index = 1;
         println!("#############################################################");
-        println!("Hello there! Remember me? Arnham, the crawler! I have some items, I can give you one if you'd like?");
+        println!("Hello there! Remember me? Arnham, the crawler! I have some items, I can sell you one if you'd like?");
 
         for item in &self.shop_items {
-            println!("{}) {} || {}", index, item.get_name(), item.get_desc());
+            println!("{}) {} || {} // COST: {}", index, item.get_name(), item.get_desc(), item.get_cost());
             index += 1;
         }
 
-        println!("Which one would you like?");
-        
-        io::stdout().flush().expect("Failed to flush stdout");
-
+        println!("Which one would you like? You have {} coins", self.player.get_money());
+    
         let input = self.read_input();
 
         self.log.debug("Input read");
@@ -190,9 +190,15 @@ impl Game {
 
         match choice {
             1..=4 => {
-                self.player.add_potion(self.shop_items[choice-1].clone());
-                self.log.info("Potion selected");
-                return;
+                if self.player.get_money() >= self.shop_items[choice-1].get_cost() {
+                    self.player.add_potion(self.shop_items[choice-1].clone());
+                    self.player.spend_money(self.shop_items[choice-1].get_cost());
+                    self.log.info("Potion bought");
+                    return;
+                } else {
+                    println!("Not enough money!");
+                    return;
+                }
             },
             _ => println!("Bad choice"),
         }
@@ -212,8 +218,6 @@ impl Game {
             4.. => self.floor = 0,
             _ => unreachable!()
         }
-
-
     }
 
     pub fn get_floor(&self) -> i8 {

@@ -1,5 +1,3 @@
-use core::prelude::rust_2015;
-
 use crate::{game::game_instance::PlayerError, logger::logger::{LogLevel, Logger}};
 
 use super::player::Player;
@@ -11,15 +9,16 @@ pub struct Enemy {
     name: String,
     hp: i64,
     damage: i64,
-    range: i64,
+    _range: i64,
     speed: i64,
     xp_drop: i64,
+    money_drop: i64,
     log: Logger
 }
 
 impl Enemy {
-    pub fn new(name: String, hp: i64, damage: i64, range: i64, speed: i64, xp_drop: i64) -> Self {
-        Enemy { name, hp, damage, range, speed, xp_drop, log: Logger::new(LogLevel::Info, "ENEMY")}
+    pub fn new(name: String, hp: i64, damage: i64, _range: i64, speed: i64, money_drop: i64, xp_drop: i64) -> Self {
+        Enemy { name, hp, damage, _range, speed, money_drop, xp_drop, log: Logger::new(LogLevel::Info, "ENEMY")}
     }
 
     pub fn attack(&self, p: &mut Player, shield: bool) -> Result<(), PlayerError> {
@@ -74,6 +73,10 @@ impl Enemy {
         self.xp_drop
     }
 
+    pub fn get_money_drop(&self) -> i64 {
+        self.money_drop
+    }
+
     pub fn get_speed(&self) -> i64 {
         self.speed
     }
@@ -108,6 +111,7 @@ pub fn initiate_boss_types() -> Vec<Enemy> {
         500,
         250,
         100,
+        5,
         500
     );
 
@@ -117,6 +121,7 @@ pub fn initiate_boss_types() -> Vec<Enemy> {
         400,
         400,
         250,
+        5,
         600,
     );
 
@@ -126,6 +131,7 @@ pub fn initiate_boss_types() -> Vec<Enemy> {
         350,
         100,
         40,
+        5,
         750,
     );
 
@@ -139,6 +145,7 @@ pub fn initiate_enemy_types() -> Vec<Enemy> {
         90,
         150,
         180,
+        1, 
         80,
     );
 
@@ -148,6 +155,7 @@ pub fn initiate_enemy_types() -> Vec<Enemy> {
         150,
         200,
         110,
+        1,
         150,
     );
 
@@ -157,6 +165,7 @@ pub fn initiate_enemy_types() -> Vec<Enemy> {
         120,
         100,
         220,
+        1,
         110,
     );
 
@@ -166,6 +175,7 @@ pub fn initiate_enemy_types() -> Vec<Enemy> {
         70,
         80,
         300,
+        1,
         60,
     );
 
@@ -175,6 +185,7 @@ pub fn initiate_enemy_types() -> Vec<Enemy> {
         180,
         50,
         60,
+        1,
         170,
     );
 

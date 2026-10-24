@@ -96,12 +96,11 @@ fn prepare_player(g: &mut Game) {
     }
 }
 
-fn player_won_menu(g: &mut Game) {
+fn player_won_menu(_g: &mut Game) {
     println!("Oh wow, you have won, congrats, game is over");
 }
 
-fn player_lost_menu(g: &mut Game) {
-
+fn player_lost_menu(_g: &mut Game) {
     println!("HAH, You have lost and the game is over now");
 
 }
